@@ -1,6 +1,7 @@
-FROM node:18-alpine
-WORKDIR /
+FROM node:alpine
+WORKDIR /usr/app
+COPY package.json .
+RUN npm install
 COPY . .
-RUN yarn install --production
-CMD ["node", "index.js"]
-EXPOSE 8080
+EXPOSE 4000
+CMD ["npm", "run", "start"]
