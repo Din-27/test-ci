@@ -3,4 +3,4 @@ WORKDIR /
 COPY . .
 RUN yarn install --production
 CMD ["node", "index.js"]
-EXPOSE 8523
+EXPOSE 8080
