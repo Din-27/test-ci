@@ -20,9 +20,7 @@ WORKDIR /app
 COPY . .
 
 # update each dependency in package.json to the latest version
-RUN npm install -g npm-check-updates \
-    ncu -u \
-    npm install \
+RUN npm install \
     npm install express \
 
 # If you are building your code for production
