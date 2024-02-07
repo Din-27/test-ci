@@ -1,41 +1,34 @@
-# This is a basic workflow to help you get started with Actions
-name: CI-CD
+name: CI/CD with Docker
 
-# Controls when the action will run.
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    branches:
+      - main  # Atau ganti dengan nama branch Anda
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-      - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1.2
-        with:
-          envkey_PORT: 4000
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/test-ci:latest
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v1.2
+      with:
+        envkey_PORT: 4000
+
+    - name: Build Docker image
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/test-ci:latest .
+
+    - name: Push Docker image to registry (optional)
+      uses: docker/build-push-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        repository: ${{ secrets.DOCKERHUB_USERNAME }}/test-ci:latest
+        tag_with_ref: true
+
+    - name: Deploy to Docker (optional)
+      run: |
+        docker-compose -f ./docker-compose.yml up -d
