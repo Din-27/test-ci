@@ -1,12 +1,6 @@
-version: "3"
+version: "3.7"
 services:
-  watchtower:
-    image: containrrr/watchtower
+  homepage:
+    image: din27/test-ci:latest
+    container_name: test-ci
     restart: unless-stopped
-    container_name: watchtower
-    environment:
-      - WATCHTOWER_POLL_INTERVAL=1800
-      - WATCHTOWER_CLEANUP=true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /root/.docker/config.json:/config.json
